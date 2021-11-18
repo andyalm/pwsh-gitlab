@@ -15,9 +15,48 @@ function Get-GitlabGroup {
         $WhatIf
     )
 
-    $Group = Invoke-GitlabApi GET "groups/$($GroupId | ConvertTo-UrlEncoded)" @{
-        'with_projects' = 'false'
-    } -SiteUrl $SiteUrl -WhatIf:$WhatIf
+    if($GroupId) {
+        $Group = Invoke-GitlabApi GET "groups/$($GroupId | ConvertTo-UrlEncoded)" @{
+            'with_projects' = 'false'
+        } -SiteUrl $SiteUrl -WhatIf:$WhatIf
+    }
+    else {
+        $Group = Invoke-GitlabApi GET "groups" @{
+            'top_level_only' = 'true'
+        } -MaxPages 20
+    }
+    
+
+    return $Group | New-WrapperObject 'Gitlab.Group'
+}
+
+function Get-GitlabChildGroup {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Position=0, Mandatory=$false)]
+        [string]
+        $GroupId,
+
+        [Parameter(Mandatory=$false)]
+        [string]
+        $SiteUrl,
+
+        [switch]
+        [Parameter(Mandatory=$false)]
+        $WhatIf
+    )
+
+    if($GroupId) {
+        $Group = Invoke-GitlabApi GET "groups/$([System.Net.WebUtility]::UrlEncode($GroupId))/subgroups" `
+            -MaxPages 20 -WhatIf:$WhatIf
+    }
+    else {
+        $Group = Invoke-GitlabApi GET "groups" @{
+            'top_level_only' = 'true'
+        } -MaxPages 20 -WhatIf:$WhatIf
+    }
+    
 
     return $Group | New-WrapperObject 'Gitlab.Group'
 }

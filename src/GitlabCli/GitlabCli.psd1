@@ -43,7 +43,7 @@
     # ProcessorArchitecture = ''
     
     # Modules that must be imported into the global environment prior to importing this module
-    RequiredModules = @('powershell-yaml')
+    RequiredModules = @('powershell-yaml', 'SHiPS')
     
     # Assemblies that must be loaded prior to importing this module
     # RequiredAssemblies = @()
@@ -72,6 +72,7 @@
         'Projects.psm1'
         'RepositoryFiles.psm1'
         'Search.psm1'
+        'SHiPS.psm1'
         'Users.psm1'
         'Utilities.psm1'
         'Variables.psm1'
